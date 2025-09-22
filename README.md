@@ -1,38 +1,22 @@
 # Supplychain Watchtower
 
-> Part of the **Cybersecurity Neighborhood Watch** initiative by [Ortelius](https://github.com/ortelius)
+**Supplychain Watchtower** is the engine behind the **Cybersecurity Neighborhood Watch**, a community-driven initiative by [Ortelius](https://github.com/ortelius) designed to protect the open-source ecosystem. Just like a neighborhood watch keeps an eye out for unusual activity, this initiative monitors software projects to spot vulnerabilities, outdated packages, and risky dependencies before they become a problem.
 
-## Overview
+- 🏘️ **Community-First**: Developers share signals and insights, helping everyone stay safer.  
+- 👀 **Continuous Monitoring**: Tracks new software releases and CVEs in real time, enabling proactive responses.  
+- 🚨 **Early Warning System**: Automated alerts act as “eyes on the street” for the software supply chain.  
+- 🤝 **Collective Security**: The more projects participate, the stronger and more resilient the ecosystem becomes.
 
-**Supplychain Watchtower** is a GitHub Actions–driven automation service that monitors new releases across open-source projects, updates the Ortelius database, and triggers CI/CD pipelines using the Ortelius CLI.  
-It leverages **AI Model Context Protocol (AI MCP) agents** to automatically update package dependency files in forked repositories, ensuring the software supply chain stays secure and current.
+Supplychain Watchtower runs as a **GitHub Actions–driven automation service**, continuously watching upstream releases, updating the Ortelius database, and triggering CI/CD pipelines. It uses **AI Model Context Protocol (AI MCP) agents** to automatically create pull requests with updated dependency files in forked repositories—keeping the software supply chain secure, up-to-date, and transparent for everyone.
+
+In short, **Supplychain Watchtower automates the heavy lifting of software supply chain security**, continuously scanning for changes, maintaining accurate dependency data, and enabling AI-driven remediation pipelines.
+
+---
 
 ## Purpose
 
-This repo powers the **Cybersecurity Neighborhood Watch** initiative, a community effort to:
-- 🕵️ Detect and track upstream package releases  
-- 📦 Maintain accurate supply chain metadata in Ortelius  
-- 🤖 Automate dependency updates with AI MCP agents  
-- 🔒 Strengthen software supply chain security  
-
-## How It Works
-
-1. **Monitor Releases**  
-   GitHub Actions listen for new releases in watched repositories.  
-
-2. **Update Ortelius Database**  
-   Supply chain data is synced into the Ortelius database.  
-
-3. **Trigger CI/CD**  
-   Pipelines are generated via the Ortelius CLI and executed.  
-
-4. **Automated Dependency Updates**  
-   AI MCP agents fork repos and update dependency files automatically.  
-
-## Getting Started
-
-Clone this repo and install dependencies:
-
-```bash
-git clone https://github.com/ortelius/supplychain-watchtower.git
-cd supplychain-watchtower
+- 🕵️ **Monitor New Releases** in open-source projects  
+- 📦 **Update Ortelius Metadata** to maintain an accurate software supply chain graph  
+- 🤖 **Automate Dependency Updates** using AI MCP agents in repositories  
+- 🔒 **Secure the Supply Chain** by ensuring packages stay current against vulnerabilities  
+- 🌐 **Foster Community Security** as part of the Cybersecurity Neighborhood Watch  
