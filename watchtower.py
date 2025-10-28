@@ -3,7 +3,7 @@
 Supplychain Watchtower
 
 Reads:
-  - watch.yaml  (list of repo URLs to watch)
+  - all YAML files from the watch/ directory  (list of repo URLs to watch)
   - state.yaml  (mapping of repo URL -> last seen version tag)
 
 Does:
@@ -40,7 +40,7 @@ from github.GithubException import GithubException
 # ---------- Config ----------
 # Load configuration from environment variables with sensible defaults
 
-WATCH_FILE = Path(os.environ.get("WATCH_FILE", "watch.yaml"))
+WATCH_FILE = Path(os.environ.get("WATCH_FILE", "watch"))  # Default to directory
 STATE_FILE = Path(os.environ.get("STATE_FILE", "state.yaml"))
 PROCESS_FILE = Path(os.environ.get("PROCESS_FILE", "process.yaml"))
 INCLUDE_PRERELEASE = os.environ.get("INCLUDE_PRERELEASE", "false").lower() == "true"
@@ -227,6 +227,65 @@ def latest_version_for_repo(gh: Github, repo_url: str) -> Optional[str]:
     return None
 
 
+def load_watch_repositories(watch_path: Path) -> list:
+    """
+    Load repository list from either a single YAML file or a directory of YAML files.
+
+    This supports two modes:
+    1. Single file: watch.yaml with repositories list
+    2. Directory: watch/ containing multiple .yaml files, each with repositories list
+
+    Args:
+        watch_path: Path to either a YAML file or directory containing YAML files
+
+    Returns:
+        Combined list of all repository URLs from all loaded files
+
+    Example:
+        # Single file mode
+        repos = load_watch_repositories(Path("watch.yaml"))
+
+        # Directory mode
+        repos = load_watch_repositories(Path("watch"))
+    """
+    repositories = []
+
+    # If it's a directory, load all .yaml files
+    if watch_path.is_dir():
+        yaml_files = sorted(watch_path.glob("*.yaml"))
+        if not yaml_files:
+            print(f"WARNING: No .yaml files found in {watch_path}")
+            return repositories
+
+        print(f"Loading from directory: {watch_path}")
+        for yaml_file in yaml_files:
+            print(f"  - Reading {yaml_file.name}")
+            data = load_yaml(yaml_file, default={})
+            repos = data.get("repositories") or []
+            if isinstance(repos, list):
+                repositories.extend(repos)
+            else:
+                print(
+                    f"    WARNING: {yaml_file.name} does not contain a 'repositories' list"
+                )
+
+    # If it's a file, load it directly (backward compatibility)
+    elif watch_path.is_file():
+        print(f"Loading from file: {watch_path}")
+        data = load_yaml(watch_path, default={})
+        repos = data.get("repositories") or []
+        if isinstance(repos, list):
+            repositories = repos
+        else:
+            die(f"{watch_path} must contain a top-level 'repositories' list")
+
+    # Path doesn't exist
+    else:
+        die(f"Watch path does not exist: {watch_path}")
+
+    return repositories
+
+
 # ---------- Main ----------
 
 
@@ -234,11 +293,10 @@ def main() -> int:
     # ===== Initialize GitHub API client =====
     gh = ensure_github()
 
-    # ===== Load watch list (input) =====
-    watch = load_yaml(WATCH_FILE, default={})
-    watch_repos = watch.get("repositories") or []
-    if not isinstance(watch_repos, list):
-        die(f"{WATCH_FILE} must contain a top-level 'repositories' list")
+    # ===== Load watch list (input) - supports both file and directory =====
+    watch_repos = load_watch_repositories(WATCH_FILE)
+    if not watch_repos:
+        die(f"No repositories found in {WATCH_FILE}")
 
     # ===== Load state (previous run results) =====
     state = load_yaml(STATE_FILE, default={})
