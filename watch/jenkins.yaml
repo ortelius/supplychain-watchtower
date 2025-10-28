@@ -1,3 +1,2 @@
 repositories:
   - https://github.com/jenkinsci/jenkins
-  - https://github.com/tektoncd/hub
