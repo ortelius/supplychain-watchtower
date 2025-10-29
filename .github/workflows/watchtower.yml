@@ -24,11 +24,16 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: "pip" # Cache pip dependencies
 
       - name: Install Python dependencies
         run: |
-          pip install -r requirements.txt
+          if [ -f requirements.txt ]; then
+            echo "Found requirements.txt - installing from file"
+            pip install -r requirements.txt
+          else
+            echo "No requirements.txt found - installing dependencies manually"
+            pip install PyGithub>=2.1.1 PyYAML>=6.0.1
+          fi
 
       - name: Run Watchtower script
         env:
