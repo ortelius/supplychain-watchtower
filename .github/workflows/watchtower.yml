@@ -5,6 +5,10 @@ on:
     # Run twice a day at 00:00 and 12:00 UTC
     - cron: "0 0,12 * * *"
   workflow_dispatch: # Allow manual runs
+  push:
+    paths-ignore:
+      - 'state.yaml'
+      - 'process.yaml'
 
 permissions:
   contents: write # Required to push changes
