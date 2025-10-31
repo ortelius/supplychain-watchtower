@@ -1,0 +1,56 @@
+name: Supply Chain Watchtower
+
+on:
+  schedule:
+    # Run twice a day at 00:00 and 12:00 UTC
+    - cron: "0 0,12 * * *"
+  workflow_dispatch: # Allow manual runs
+
+permissions:
+  contents: write # Required to push changes
+
+jobs:
+  run-watchtower:
+    name: Check Repository Versions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: |
+          if [ -f requirements.txt ]; then
+            echo "Found requirements.txt - installing from file"
+            pip install -r requirements.txt
+          else
+            echo "No requirements.txt found - installing dependencies manually"
+            pip install PyGithub>=2.1.1 PyYAML>=6.0.1
+          fi
+
+      - name: Run Watchtower script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python watchtower.py
+
+      - name: Commit and push updated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Check if there are any changes
+          if [ -n "$(git status --porcelain)" ]; then
+            git add state.yaml process.yaml
+            git commit -m "Update repository versions [skip ci]"
+            git push
+          else
+            echo "No changes to commit"
+          fi
