@@ -1,3 +1,1 @@
-repositories:
-  https://github.com/jenkinsci/jenkins: jenkins-2.538
-  https://github.com/tektoncd/hub: v1.23.1
+repositories: {}
