@@ -1,2 +1,1 @@
-repositories:
-  https://github.com/jenkinsci/jenkins: jenkins-2.539
+repositories: {}
