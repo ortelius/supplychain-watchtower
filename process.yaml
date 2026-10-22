@@ -1,1 +1,2 @@
-repositories: {}
+repositories:
+  https://github.com/jenkinsci/jenkins: untagged-refs/heads/master
