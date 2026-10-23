@@ -1,2 +1,2 @@
 repositories:
-  https://github.com/jenkinsci/jenkins: untagged-refs/heads/master
+  https://github.com/jenkinsci/jenkins: jenkins-2.587
